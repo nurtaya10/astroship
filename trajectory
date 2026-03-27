@@ -1,0 +1,74 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import matplotlib.animation as animation 
+plt.rcParams['animation.ffmpeg_path'] = r"C:\Users\INTEL R\Desktop\astroship2\ffmpeg-7.1.1-essentials_build\bin\ffmpeg.exe"
+G = 4 * np.pi**2 
+MU = G 
+SEMI_MAJOR_AXIS = 1.725 
+ECCENTRICITY = 0.57
+ORBITAL_PERIOD = 2.27 
+DELTA_V = 0.02  # Velocity change in km/s
+DELTA_V_AU_YR = DELTA_V * 0.2108  # Convert km/s to AU/yr
+
+YEARS = 10
+FRAMES = 300
+TIME = np.linspace(0, YEARS, FRAMES)
+
+def calculate_orbit(semi_major_axis, eccentricity, time, delta_v=0):
+    """
+    Calculates the orbit of an asteroid, including the effect of ablation.
+
+    Args:
+        semi_major_axis (float): Semi-major axis of the orbit in AU.
+        eccentricity (float): Eccentricity of the orbit.
+        time (np.ndarray): Array of time values in years.
+        delta_v (float, optional): Velocity change due to ablation in AU/yr. Defaults to 0.
+
+    Returns:
+        tuple: A tuple containing the x and y coordinates of the orbit.
+    """
+    mean_anomaly = 2 * np.pi * time / ORBITAL_PERIOD  # Mean anomaly
+    theta = mean_anomaly  # True anomaly (approximation for school level)
+    r = semi_major_axis * (1 - eccentricity**2) / (1 + eccentricity * np.cos(theta))  # Distance from the Sun
+
+    r = r + delta_v * time
+
+    x = r * np.cos(theta)  # x coordinate
+    y = r * np.sin(theta)  # y coordinate
+    return x, y
+
+x1, y1 = calculate_orbit(SEMI_MAJOR_AXIS, ECCENTRICITY, TIME, delta_v=0)  # Original orbit
+x2, y2 = calculate_orbit(SEMI_MAJOR_AXIS, ECCENTRICITY, TIME, delta_v=DELTA_V_AU_YR)  # Orbit after ablation
+
+fig, ax = plt.subplots(figsize=(8, 8))
+ax.set_xlim(-3, 3)
+ax.set_ylim(-3, 3)
+ax.set_title("Asteroid 2007 VK184 trajectory deflection by laser ablation")
+ax.set_xlabel("AU")
+ax.set_ylabel("AU")
+
+ax.scatter(0, 0, color="yellow", s=200)
+
+line1, = ax.plot([], [], 'r', label="Original orbit")
+line2, = ax.plot([], [], 'b', label="After laser ablation")
+p1, = ax.plot([], [], 'ro')  # Asteroid before ablation
+p2, = ax.plot([], [], 'bo')  # Asteroid after ablation
+
+ax.legend()
+
+def update(frame):
+    line1.set_data(x1[:frame], y1[:frame])
+    line2.set_data(x2[:frame], y2[:frame])
+    # Обернули координаты точек в списки [ ]
+    p1.set_data([x1[frame]], [y1[frame]]) 
+    p2.set_data([x2[frame]], [y2[frame]])
+    return line1, line2, p1, p2
+
+ani = FuncAnimation(fig, update, frames=FRAMES, interval=40)
+writer = animation.FFMpegWriter(fps=30)
+print("Начинаю рендеринг видео...")
+ani.save("VK184_ablation_simulation.mp4", writer=writer)
+print("ГОТОВО. Видео сохранено как VK184_ablation_simulation.mp4")
+
+plt.show()
