@@ -1,0 +1,9 @@
+{
+  "name": "astroship-vk184",
+  "version": "1.0.0",
+  "description": "2007 VK184 — 3D trajectory animation ",
+  "scripts": {
+    "start": "npx --yes serve . -p 3000",
+    "serve": "npx --yes serve . -p 3000"
+  }
+}

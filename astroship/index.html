@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2007 VK184 — Лазерлік абляциядан кейінгі траектория</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0f; font-family: 'Segoe UI', system-ui, sans-serif; color: #e8e8ec; }
+    #canvas-container { position: fixed; inset: 0; }
+    #hud {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(180deg, rgba(10,10,20,0.92) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 10;
+    }
+    #hud h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #hud .badge {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      background: rgba(80, 180, 220, 0.25);
+      color: #7dd3fc;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    #info-panel {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+      max-width: 260px;
+      padding: 0.5rem 0.65rem;
+      background: rgba(12, 12, 22, 0.88);
+      border: 1px solid rgba(120, 120, 160, 0.2);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      z-index: 10;
+    }
+    #info-panel h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #94a3b8;
+      margin-bottom: 0.35rem;
+    }
+    #info-panel .row { display: flex; justify-content: space-between; margin-bottom: 0.25rem; gap: 0.5rem; }
+    #info-panel .row span:last-child { color: #cbd5e1; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+    #legend {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(12, 12, 22, 0.88);
+      border: 1px solid rgba(120, 120, 160, 0.2);
+      border-radius: 12px;
+      font-size: 0.75rem;
+      z-index: 10;
+    }
+    #legend .item { display: flex; align-items: center; gap: 0.5rem; }
+    #legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    #legend .dot.current { background: #f97316; box-shadow: 0 0 8px #f97316; }
+    #legend .dot.ablated { background: #22d3ee; box-shadow: 0 0 8px #22d3ee; }
+    #legend .dot.earth { background: #38bdf8; }
+    #caption {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(100, 116, 139, 0.8);
+      pointer-events: none;
+      z-index: 5;
+      transition: opacity 0.5s;
+    }
+    #caption.hidden { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="hud">
+    <h1><span class="badge">2007 VK184</span> Астероидтың 3D траекториясы</h1>
+  </div>
+  <div id="info-panel">
+    <h3>Орбиталық деректер</h3>
+    <div class="row"><span>Диаметр</span><span>137,57 м</span></div>
+    <div class="row"><span>Жерден қашықтық</span><span>1,4 АЕ</span></div>
+    <div class="row"><span>Жылдамдық (Күнге қатысты)</span><span>16,04 км/с</span></div>
+    <div class="row"><span>Орбиталық кезең</span><span>2,27 жыл</span></div>
+    <div class="row"><span>Перигелий</span><span>0,74 АЕ</span></div>
+    <div class="row"><span>Афелий</span><span>2,71 АЕ</span></div>
+    <div class="row"><span>Жақындау</span><span>2 маусым 2048 &lt; 0,05 АЕ</span></div>
+    <div class="row"><span>Эксцентриситет</span><span>0,57</span></div>
+    <div class="row"><span>Көлбеулік</span><span>1,221°</span></div>
+  </div>
+  <div id="legend">
+    <div class="item"><span class="dot current"></span><span>Ағымдағы траектория</span></div>
+    <div class="item"><span class="dot ablated"></span><span>Лазерлік абляциядан кейінгі траектория</span></div>
+    <div class="item"><span class="dot earth"></span><span>Жер орбитасы</span></div>
+  </div>
+  <p id="caption">3D көрініс жүктелуде…</p>
+  <script type="importmap">
+    {"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
